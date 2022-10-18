@@ -6,22 +6,22 @@ import { nanoid } from 'nanoid';
 import { TodoList } from './TodoList/TodoList';
 import { TodoEditor } from './TodoList/TodoEditor';
 import { Filter } from './TodoList/Filter';
-import { Form } from './Form';
-import initialTodos from '../todos.json';
-
-// const colorPickerOptions = [
-//   { label: 'red', color: '#F44336' },
-//   { label: 'green', color: '#4CAF50' },
-//   { label: 'blue', color: '#2196F3' },
-//   { label: 'grey', color: '#607D8B' },
-//   { label: 'pink', color: '#E91E63' },
-//   { label: 'indigo', color: '#3F51B5' },
-// ];
+import { Modal } from '../components/Modal/Modal';
+// import { Form } from './Form';
+// import initialTodos from '../todos.json';
+// import colorPickerOptions from '../colorPickerOptions.json';
 
 export class App extends Component {
   state = {
-    todos: initialTodos,
+    todos: [],
     filter: '',
+    showModal: false,
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
   };
 
   addTodo = text => {
@@ -89,8 +89,28 @@ export class App extends Component {
     console.log(data);
   };
 
+  componentDidMount() {
+    console.log('didMount');
+    const todos = localStorage.getItem('todos');
+    const parsedTodos = JSON.parse(todos);
+
+    if (parsedTodos) {
+      this.setState({ todos: parsedTodos });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const nextTodos = this.state.todos;
+    const prevTodos = prevState.todos;
+
+    if (nextTodos !== prevTodos) {
+      console.log('Обновилось поле todos, записываю todos в хранилище');
+      localStorage.setItem('todos', JSON.stringify(nextTodos));
+    }
+  }
+
   render() {
-    const { todos, filter } = this.state;
+    const { todos, filter, showModal } = this.state;
 
     const totalTodosCount = todos.length;
 
@@ -102,8 +122,21 @@ export class App extends Component {
         {/* <ColorPicker options={colorPickerOptions} />
         <Counter />
         <Counter initialValue={10} />
-        <Dropdown /> */}
-        <Form onSubmit={this.formSubmitHandler} />
+        <Dropdown />
+        <Form onSubmit={this.formSubmitHandler} /> */}
+
+        {/* <IconButton onClick={this.toggleModal} aria-label="Добавить todo">
+          <AddIcon width="40" height="40" fill="#fff" />
+        </IconButton> */}
+        <button onClick={this.toggleModal} type="button">
+          x
+        </button>
+
+        {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <button type="button">x</button>
+          </Modal>
+        )}
 
         <TodoEditor onSubmit={this.addTodo} />
         <div>
