@@ -18,8 +18,11 @@ const ModalContent = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-height: 300px;
-  max-width: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+  max-width: 650px;
   width: 100%;
   padding: 12px;
   background-color: #fff;

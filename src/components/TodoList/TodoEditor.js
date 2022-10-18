@@ -27,6 +27,10 @@ const TodoEditorTextarea = styled.textarea`
 `;
 
 const TodoEditorButton = styled.button`
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
   width: 100%;
   margin-left: auto;
   border-radius: 4px;

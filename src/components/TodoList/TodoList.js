@@ -1,15 +1,24 @@
 import styled from 'styled-components';
+import { Todo } from './Todo';
 
 const Container = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: 600px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 `;
 
 const TodoListItem = styled.li`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px;
   border: 1px solid black;
+  border-radius: 4px;
   &::before {
     content: '';
     position: absolute;
@@ -18,42 +27,26 @@ const TodoListItem = styled.li`
     width: 100%;
     height: 4px;
 
-    background-color: $green;
+    background-color: green;
+    transform: scaleX(0);
     transform: ${p => {
       return p.completed ? 'scaleX(1)' : '1scaleX(0)';
     }};
-    /* transform: scaleX(0); */
-    transition: transform 250ms $timing-function;
+
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
   }
-`;
-
-const TodoListText = styled.p`
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-right: 10px;
-  text-decoration: ${p => {
-    return p.completed ? ' line-through' : 'none';
-  }};
-`;
-
-const TodoListCheckbox = styled.input`
-  cursor: pointer;
-  width: 24px;
-  height: 24px;
 `;
 
 export const TodoList = ({ todos, onDeleteTodo, onToggleCompleted }) => (
   <Container>
     {todos.map(({ id, text, completed }) => (
       <TodoListItem key={id} completed={completed}>
-        <TodoListCheckbox
-          type="checkbox"
-          checked={completed}
-          onChange={() => onToggleCompleted(id)}
+        <Todo
+          text={text}
+          completed={completed}
+          onToggleCompleted={() => onToggleCompleted(id)}
+          onDelete={() => onDeleteTodo(id)}
         />
-        <TodoListText>{text}</TodoListText>
-
-        <button onClick={() => onDeleteTodo(id)}>Удалить</button>
       </TodoListItem>
     ))}
   </Container>

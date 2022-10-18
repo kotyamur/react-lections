@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
+import styled from 'styled-components';
 // import { ColorPicker } from './ColorPicker/ColorPicker';
 // import { Counter } from './Counter/Counter';
 // import { Dropdown } from './Dropdown/Dropdown';
@@ -7,9 +8,16 @@ import { TodoList } from './TodoList/TodoList';
 import { TodoEditor } from './TodoList/TodoEditor';
 import { Filter } from './TodoList/Filter';
 import { Modal } from '../components/Modal/Modal';
+import { IconButton } from './IconButton/IconButton';
+import { ReactComponent as AddIcon } from '../icons/add.svg';
 // import { Form } from './Form';
 // import initialTodos from '../todos.json';
 // import colorPickerOptions from '../colorPickerOptions.json';
+
+const Container = styled.div`
+  width: 600px;
+  padding: 15px 40px;
+`;
 
 export class App extends Component {
   state = {
@@ -17,6 +25,30 @@ export class App extends Component {
     filter: '',
     showModal: false,
   };
+
+  componentDidMount() {
+    console.log('didMount');
+    const todos = localStorage.getItem('todos');
+    const parsedTodos = JSON.parse(todos);
+
+    if (parsedTodos) {
+      this.setState({ todos: parsedTodos });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const nextTodos = this.state.todos;
+    const prevTodos = prevState.todos;
+
+    if (nextTodos !== prevTodos) {
+      console.log('Обновилось поле todos, записываю todos в хранилище');
+      localStorage.setItem('todos', JSON.stringify(nextTodos));
+    }
+
+    if (nextTodos.length > prevTodos.length && prevTodos.length !== 0) {
+      this.toggleModal();
+    }
+  }
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({
@@ -34,6 +66,8 @@ export class App extends Component {
     this.setState(({ todos }) => ({
       todos: [todo, ...todos],
     }));
+
+    // this.toggleModal();
   };
 
   deleteTodo = todoId => {
@@ -89,26 +123,6 @@ export class App extends Component {
     console.log(data);
   };
 
-  componentDidMount() {
-    console.log('didMount');
-    const todos = localStorage.getItem('todos');
-    const parsedTodos = JSON.parse(todos);
-
-    if (parsedTodos) {
-      this.setState({ todos: parsedTodos });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const nextTodos = this.state.todos;
-    const prevTodos = prevState.todos;
-
-    if (nextTodos !== prevTodos) {
-      console.log('Обновилось поле todos, записываю todos в хранилище');
-      localStorage.setItem('todos', JSON.stringify(nextTodos));
-    }
-  }
-
   render() {
     const { todos, filter, showModal } = this.state;
 
@@ -118,27 +132,23 @@ export class App extends Component {
     const visibleTodos = this.getVisibleTodos();
 
     return (
-      <div>
+      <Container>
         {/* <ColorPicker options={colorPickerOptions} />
         <Counter />
         <Counter initialValue={10} />
         <Dropdown />
         <Form onSubmit={this.formSubmitHandler} /> */}
 
-        {/* <IconButton onClick={this.toggleModal} aria-label="Добавить todo">
+        <IconButton onClick={this.toggleModal} aria-label="Добавить todo">
           <AddIcon width="40" height="40" fill="#fff" />
-        </IconButton> */}
-        <button onClick={this.toggleModal} type="button">
-          x
-        </button>
+        </IconButton>
 
         {showModal && (
           <Modal onClose={this.toggleModal}>
-            <button type="button">x</button>
+            <TodoEditor onSubmit={this.addTodo} />
           </Modal>
         )}
 
-        <TodoEditor onSubmit={this.addTodo} />
         <div>
           <p>Общее количество: {totalTodosCount}</p>
           <p>Completed количество: {completedTodoCount}</p>
@@ -149,7 +159,7 @@ export class App extends Component {
           onDeleteTodo={this.deleteTodo}
           onToggleCompleted={this.toggleCompleted}
         />
-      </div>
+      </Container>
     );
   }
 }
