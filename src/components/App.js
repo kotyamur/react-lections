@@ -13,6 +13,8 @@ import { ReactComponent as AddIcon } from '../icons/add.svg';
 // import { Form } from './Form';
 // import initialTodos from '../todos.json';
 // import colorPickerOptions from '../colorPickerOptions.json';
+import { Reader } from './Reader/Reader';
+import publications from './publications.json';
 
 const Container = styled.div`
   width: 600px;
@@ -133,6 +135,7 @@ export class App extends Component {
 
     return (
       <Container>
+        <Reader items={publications} />
         {/* <ColorPicker options={colorPickerOptions} />
         <Counter />
         <Counter initialValue={10} />
