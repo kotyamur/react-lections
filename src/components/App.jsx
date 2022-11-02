@@ -3,6 +3,7 @@ import { About } from '../pages/About';
 import { Home } from '../pages/Home';
 import { Products } from '../pages/Products';
 import { NotFound } from '../pages/NotFound';
+import { ProductDetails } from '../pages/ProductDetails';
 import { Container, Header, Logo, Link } from './App.styled';
 
 export const App = () => {
@@ -27,6 +28,7 @@ export const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Container>
